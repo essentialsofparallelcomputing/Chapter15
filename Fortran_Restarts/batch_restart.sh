@@ -15,6 +15,9 @@
 #SBATCH --signal=23@160
 #SBATCH -t 00:08:00
 
+# Do not place bash commands before the last SBATCH directive
+# Results can be unreliable
+
 NUM_CPUS=4
 OUTPUT_FILE=run.out
 EXEC_NAME=./testapp

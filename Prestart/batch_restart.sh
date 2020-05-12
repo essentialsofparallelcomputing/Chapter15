@@ -40,6 +40,9 @@ if [ ! -e DONE ]; then
       cycle=""
    fi
 
+   echo "=== Submitting restart script ==="              >> ${OUTPUT_FILE}
+   sbatch --dependency=afterok:${SLURM_JOB_ID} <batch_restart.sh
+
    mpirun -n ${NUM_CPUS} ${EXEC_NAME} ${cycle}          &>> ${OUTPUT_FILE}
    STATUS=$?
    echo "Finished mpirun"                                >> ${OUTPUT_FILE}
@@ -47,10 +50,5 @@ if [ ! -e DONE ]; then
    if [ ${COUNT} -ge ${MAX_RESTARTS} ]; then
       echo "=== Reached maximum number of restarts ==="  >> ${OUTPUT_FILE}
       date > DONE
-   fi
-
-   if [ ${STATUS} = "0" -a ! -e DONE ]; then
-      echo "=== Submitting restart script ==="           >> ${OUTPUT_FILE}
-      sbatch <batch_restart.sh
    fi
 fi
