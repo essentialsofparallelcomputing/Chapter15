@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
    int mype, itstart = 1;
    MPI_Comm_rank(MPI_COMM_WORLD, &mype);
 
-   if (argc >=3) itstart = atoi(argv[2]);
+   if (argc >=2) itstart = atoi(argv[1]);
    // if (istart > 0) read_restart;
 
    if (mype ==0) signal(23, batch_timeout);
