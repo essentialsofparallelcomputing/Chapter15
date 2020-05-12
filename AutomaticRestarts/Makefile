@@ -1,5 +1,13 @@
-testapp: testapp.c
-	mpicc testapp.c -o testapp
+default: testapp
+
+testapp.o: testapp.c
+	mpicc -g -c testapp.c
+
+testapp: testapp.o
+	mpif90 -g testapp.o -o testapp
+
+run: testapp
+	sbatch < batch_restart.sh
 
 clean:
-	rm -rf testapp
+	rm -rf testapp testapp.o *.mod *.out DONE RESTART checkpoint.*

@@ -6,47 +6,64 @@
 #include <mpi.h>
 
 static int batch_terminate_signal = 0;
-static void batch_timeout(int signum){
+void batch_timeout(int signum){
+   printf("Batch Timeout : %d\n",signum);
    batch_terminate_signal = 1;
+   return;
 }
-
-void exit_with_status(int mype, int ival, char *status_string);
 
 int main(int argc, char *argv[])
 {
    MPI_Init(&argc, &argv);
-   int mype, istart = 0;
+   char checkpoint_name[50];
+   int mype, itstart = 1;
    MPI_Comm_rank(MPI_COMM_WORLD, &mype);
 
-   if (argc >=3) istart = atoi(argv[2]);
+   if (argc >=3) itstart = atoi(argv[2]);
    // if (istart > 0) read_restart;
 
-   struct sigaction sighdlr;
-   sighdlr.sa_handler = batch_timeout;
-   if (mype ==0) sigaction(23, &sighdlr, NULL);
+   if (mype ==0) signal(23, batch_timeout);
 
-   for (int i=istart; i < 10000000; i++){
-      sleep(100);
+   for (int it=itstart; it < 10000; it++){
+      sleep(1);
 
+      if ( it%60 == 0 ) {
+         // write out restart file
+         if (mype == 0){
+            time_t tval = time(NULL);
+            printf("%d %s: %s", it, "Checkpoint", ctime(&tval));
+            sprintf(checkpoint_name,"checkpoint.%05d",it);
+            FILE *fp = fopen(checkpoint_name, "w+");
+            fprintf(fp,"%d %s: %s", it, "Checkpoint", ctime(&tval));
+            fclose(fp);
+         }
+      }
       int terminate_sig = batch_terminate_signal;
       MPI_Bcast(&terminate_sig, 1, MPI_INT, 0, MPI_COMM_WORLD);
       if ( terminate_sig ) {
-         // write out restart file
-         exit_with_status(mype, i, "RESTART");
+         if (mype == 0){
+            time_t tval = time(NULL);
+            printf("%d %s: %s", it, "RESTART", ctime(&tval));
+            FILE *fp = fopen("RESTART", "w+");
+            fprintf(fp,"%d %s: %s", it, "RESTART", ctime(&tval));
+            fclose(fp);
+            fp = fopen("checkpoint.xxxxx", "w+");
+            fprintf(fp,"%d %s: %s", it, "Restart Checkpoint", ctime(&tval));
+            fclose(fp);
+         }
+         MPI_Finalize();
+         exit(0);
       }
 
-      if (i > 10000) exit_with_status(mype, i, "DONE");
    }
-}
 
-void exit_with_status(int mype, int ival, char *status_string){
    if (mype == 0){
       time_t tval = time(NULL);
-      printf("%d %s: %s", ival, status_string, ctime(&tval));
-      FILE *fp = fopen(status_string, "w+");
-      fprintf(fp,"%d %s: %s", ival, status_string, ctime(&tval));
+      printf("%s: %s", "DONE", ctime(&tval));
+      FILE *fp = fopen("DONE", "w+");
+      fprintf(fp,"%s: %s", "DONE", ctime(&tval));
       fclose(fp);
    }
    MPI_Finalize();
-   exit(0);
+   return(0);
 }

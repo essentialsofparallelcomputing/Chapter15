@@ -10,16 +10,16 @@
 # out to the run directory. The application needs to write out a file
 # called RESTART if it exits due to a run-time limit.
 #
+#SBATCH -N 1
+#SBATCH -n 4
+#SBATCH --signal=23@160
+#SBATCH -t 00:8:00
+
 NUM_CPUS=4
 OUTPUT_FILE=run.out
 PROB_INPUT=run.in
 EXEC_NAME=./testapp
 MAX_RESTARTS=4
-
-#SBATCH -N 1
-#SBATCH -n ${NUM_CPUS}
-#SBATCH --signal=23@150
-#SBATCH -t 00:05:00
 
 if [ -z ${COUNT} ]; then
    export COUNT=0
@@ -31,14 +31,14 @@ echo "Restart COUNT is ${COUNT}"
 if [ ! -e DONE ]; then
    if [ -e RESTART ]; then
       echo "=== Restarting ${EXEC_NAME} ==="               >> ${OUTPUT_FILE}
-      cycle = `cut -f 1 -d " " RESTART`
+      cycle=`cut -f 1 -d " " RESTART`
+      cycle=`cat RESTART`
       rm -f RESTART
    else
       echo "=== Starting problem ==="                      >>  ${OUTPUT_FILE}
-      cycle = ""
    fi
 
-   mpirun -n ${NUM_CPUS} ./${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
+   mpirun -n ${NUM_CPUS} ${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
    STATUS=$?
    echo "Finished mpirun" >> ${OUTPUT_FILE}
 
@@ -47,7 +47,7 @@ if [ ! -e DONE ]; then
       date > DONE
    fi
 
-   if [ ${STATUS} = "0" && ! -e DONE ]; then
+   if [ ${STATUS} = "0" -a ! -e DONE ]; then
       echo "=== Submitting restart script ==="             >> ${OUTPUT_FILE}
       sbatch <batch_restart.sh
    fi
