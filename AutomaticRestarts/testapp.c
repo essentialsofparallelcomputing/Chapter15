@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
       sleep(1);
 
       if ( it%60 == 0 ) {
-         // write out restart file
          if (mype == 0){
             time_t tval = time(NULL);
             printf("%d %s: %s", it, "Checkpoint", ctime(&tval));

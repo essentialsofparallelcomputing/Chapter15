@@ -16,7 +16,7 @@
 #SBATCH -t 00:08:00
 
 # Do not place bash commands before the last SBATCH directive
-# Results can be unreliable
+# Behavior can be unreliable
 
 NUM_CPUS=4
 OUTPUT_FILE=run.out
