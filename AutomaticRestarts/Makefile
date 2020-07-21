@@ -1,5 +1,5 @@
 testapp: testapp.c
-	mpicc testapp.c -o testapp
+	mpicc -std=gnu99 testapp.c -o testapp
 
 clean:
 	rm -rf testapp

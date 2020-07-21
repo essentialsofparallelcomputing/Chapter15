@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
    if (mype ==0) sigaction(23, &sighdlr, NULL);
 
    for (int i=istart; i < 10000000; i++){
-      sleep(100);
+      sleep(10);
 
       int terminate_sig = batch_terminate_signal;
       MPI_Bcast(&terminate_sig, 1, MPI_INT, 0, MPI_COMM_WORLD);

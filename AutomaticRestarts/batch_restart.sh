@@ -20,6 +20,7 @@ MAX_RESTARTS=4
 #SBATCH -n ${NUM_CPUS}
 #SBATCH --signal=23@150
 #SBATCH -t 00:05:00
+#SBATCH -p skylake-gold
 
 if [ -z ${COUNT} ]; then
    export COUNT=0
@@ -31,16 +32,15 @@ echo "Restart COUNT is ${COUNT}"
 if [ ! -e DONE ]; then
    if [ -e RESTART ]; then
       echo "=== Restarting ${EXEC_NAME} ==="               >> ${OUTPUT_FILE}
-      cycle = `cut -f 1 -d " " RESTART`
+      cycle=`cut -f 1 -d " " RESTART`
       rm -f RESTART
    else
       echo "=== Starting problem ==="                      >>  ${OUTPUT_FILE}
-      cycle = ""
    fi
 
-   mpirun -n ${NUM_CPUS} ./${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
+   srun -n ${NUM_CPUS} ./${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
    STATUS=$?
-   echo "Finished mpirun" >> ${OUTPUT_FILE}
+   echo "Finished srun" >> ${OUTPUT_FILE}
 
    if [ ${COUNT} -ge ${MAX_RESTARTS} ]; then
       echo "=== Reached maximum number of restarts ===" >> ${OUTPUT_FILE}
