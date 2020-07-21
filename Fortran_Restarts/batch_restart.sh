@@ -32,16 +32,17 @@ echo "Restart COUNT is ${COUNT}"
 
 if [ ! -e DONE ]; then
    if [ -e RESTART ]; then
-      echo "=== Restarting ${EXEC_NAME} ==="               >> ${OUTPUT_FILE}
-      cycle=`cut -f 1 -d " " RESTART`
+      echo "=== Restarting ${EXEC_NAME} ==="             >> ${OUTPUT_FILE}
+      cycle=`cat RESTART`
       rm -f RESTART
    else
-      echo "=== Starting problem ==="                      >>  ${OUTPUT_FILE}
+      echo "=== Starting problem ==="                    >> ${OUTPUT_FILE}
+      cycle=""
    fi
 
-   srun -n ${NUM_CPUS} ./${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
+   mpirun -n ${NUM_CPUS} ${EXEC_NAME} ${cycle}          &>> ${OUTPUT_FILE}
    STATUS=$?
-   echo "Finished srun" >> ${OUTPUT_FILE}
+   echo "Finished mpirun"                                >> ${OUTPUT_FILE}
 
    if [ ${COUNT} -ge ${MAX_RESTARTS} ]; then
       echo "=== Reached maximum number of restarts ==="  >> ${OUTPUT_FILE}

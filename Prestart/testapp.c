@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
 
    if (mype ==0) signal(23, batch_timeout);
 
-   for (int i=istart; i < 10000000; i++){
-      sleep(10);
+   for (int it=itstart; it < 10000; it++){
+      sleep(1);
 
       if ( it%60 == 0 ) {
          if (mype == 0){

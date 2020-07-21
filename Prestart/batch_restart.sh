@@ -32,24 +32,23 @@ echo "Restart COUNT is ${COUNT}"
 
 if [ ! -e DONE ]; then
    if [ -e RESTART ]; then
-      echo "=== Restarting ${EXEC_NAME} ==="               >> ${OUTPUT_FILE}
-      cycle=`cut -f 1 -d " " RESTART`
+      echo "=== Restarting ${EXEC_NAME} ==="             >> ${OUTPUT_FILE}
+      cycle=`cat RESTART`
       rm -f RESTART
    else
-      echo "=== Starting problem ==="                      >>  ${OUTPUT_FILE}
+      echo "=== Starting problem ==="                    >> ${OUTPUT_FILE}
+      cycle=""
    fi
 
-   srun -n ${NUM_CPUS} ./${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
+   echo "=== Submitting restart script ==="              >> ${OUTPUT_FILE}
+   sbatch --dependency=afterok:${SLURM_JOB_ID} <batch_restart.sh
+
+   mpirun -n ${NUM_CPUS} ${EXEC_NAME} ${cycle}          &>> ${OUTPUT_FILE}
    STATUS=$?
-   echo "Finished srun" >> ${OUTPUT_FILE}
+   echo "Finished mpirun"                                >> ${OUTPUT_FILE}
 
    if [ ${COUNT} -ge ${MAX_RESTARTS} ]; then
       echo "=== Reached maximum number of restarts ==="  >> ${OUTPUT_FILE}
       date > DONE
-   fi
-
-   if [ ${STATUS} = "0" -a ! -e DONE ]; then
-      echo "=== Submitting restart script ==="           >> ${OUTPUT_FILE}
-      sbatch <batch_restart.sh
    fi
 fi
