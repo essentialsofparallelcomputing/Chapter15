@@ -1,1 +1,1 @@
-Dockerfile.slurm
+Dockerfile.Ubuntu20.04
