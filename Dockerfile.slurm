@@ -1,7 +1,8 @@
 FROM ubuntu:20.04 AS builder
 
 LABEL essentialsofparallelcomputing/chapter15 \
-      Robey and Zamora
+      Robey and Zamora, Parallel and High Performance Computing, \
+      Manning Publications
 
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
@@ -47,6 +48,7 @@ RUN update-alternatives \
 
 # Compile, build and install Slurm from Git source
 ARG SLURM_TAG=slurm-19-05-4-1
+RUN update-alternatives --set gcc /usr/bin/gcc-9
 RUN set -ex \
     && git clone https://github.com/SchedMD/slurm.git \
     && cd slurm \
@@ -68,19 +70,21 @@ RUN set -ex \
         /var/run/slurmd \
         /var/lib/slurmd \
         /var/log/slurm \
-    && chown slurm:root /var/spool/slurmd \
+    && chown slurm:root \
+        /var/spool/slurmd \
         /var/run/slurmd \
         /var/lib/slurmd \
-        /var/log/slurm \
-    && mkdir -p /var/run/supervisor \
-    && mkdir -p /var/run/mariadb \
-    && mkdir -p /var/run/mysqld \
-    && chown -R mysql:mysql /var/lib/mysql \
-    && chown -R mysql:mysql /var/run/mariadb \
-    && chown -R mysql:mysql /var/run/mysqld \
-    && mkdir -p /run/munge \
-    && chown munge:munge /run/munge \
+        /var/log/slurm
+
+RUN mkdir -p /var/run/supervisor
+
+RUN mkdir -p /var/run/mariadb && mkdir -p /var/run/mysqld \
+    && chown -R mysql:mysql /var/lib/mysql /var/run/mariadb /var/run/mysqld
+
+RUN mkdir -p /run/munge && chown munge:munge /run/munge \
     && /usr/sbin/create-munge-key -f
+
+RUN update-alternatives --set gcc /usr/bin/gcc-10
 
 # Copy Slurm configuration files into the container
 COPY files/slurm/slurm.conf /etc/slurm/slurm.conf

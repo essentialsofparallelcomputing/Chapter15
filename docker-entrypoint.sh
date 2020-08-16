@@ -1,6 +1,5 @@
 #!/usr/local/bin/bash
 
-if [ ! -d "/var/lib/mysql/slurm_acct_db" ]; then
 #if [ ! -f "/var/lib/mysql/ibdata1" ]; then
     echo "- Initializing database"
     /usr/bin/mysql_install_db --force
@@ -10,6 +9,7 @@ if [ ! -d "/var/lib/mysql/slurm_acct_db" ]; then
 #   chown -R mysql:mysql /var/run/mariadb
 #fi
 
+if [ ! -d "/var/lib/mysql/slurm_acct_db" ]; then
     /usr/bin/mysqld_safe --datadir="/var/lib/mysql" &
 
     for count in {10..0}; do
