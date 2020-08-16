@@ -12,18 +12,19 @@
 if [ ! -d "/var/lib/mysql/slurm_acct_db" ]; then
     /usr/bin/mysqld_safe --datadir="/var/lib/mysql" &
 
-    for count in {10..0}; do
-        if echo "SELECT 1" | mysql ; then
-            break
-        fi
-        echo "- Starting MariaDB to create Slurm account database"
-        sleep 1
-    done
+    mysql
+#   for count in {10..0}; do
+#       if echo "SELECT 1" | mysql ; then
+#           break
+#       fi
+#       echo "- Starting MariaDB to create Slurm account database"
+#       sleep 1
+#   done
 
-    if [[ "$count" -eq 0 ]]; then
-        echo >&2 "MariaDB did not start"
+#   if [[ "$count" -eq 0 ]]; then
+#       echo >&2 "MariaDB did not start"
 #       exit 1
-    fi
+#   fi
 
     echo "- Creating Slurm acct database"
     mysql -NBe "CREATE DATABASE slurm_acct_db"
