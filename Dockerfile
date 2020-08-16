@@ -1,1 +1,1 @@
-Dockerfile.Ubuntu18.04
+Dockerfile.slurm
