@@ -1,4 +1,7 @@
-default:
+default: status AutomaticRestarts
+.PHONY: status AutomaticRestarts
+
+status:
 	supervisorctl status
 	service --status-all
 	sinfo
@@ -15,3 +18,6 @@ default:
 	# check output
 	sleep 20
 	cat slurm-*.out
+
+AutomaticRestarts:
+	cd AutomaticRestarts && make && sbatch batch_restart.sh
