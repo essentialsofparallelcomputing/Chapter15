@@ -3,7 +3,7 @@ version: '3'
 services:
   slurm:
     build: .
-    hostname: ernie
+    hostname: chapter15
     stdin_open: true
     tty: true
     volumes:

@@ -1,2 +1,2 @@
 #!/bin/sh
-docker run -it --entrypoint /bin/bash essentialsofparallelcomputing/chapter15
+docker run --init -it -h chapter15 --entrypoint /usr/local/bin/bash essentialsofparallelcomputing/chapter15

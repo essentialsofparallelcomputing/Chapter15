@@ -13,15 +13,35 @@ RUN set -ex \
     && DEBIAN_FRONTEND=noninteractive \
        apt-get -qq build-dep -y munge slurm-wlm \
     && apt-get -qq install git vim man2html liblz4-dev libcurl4-openssl-dev munge \
-         python python-setuptools python-dev mariadb-server supervisor netcat wget expect
+         python python-setuptools python-dev mariadb-server supervisor netcat wget expect \
+         mpich libmpich-dev \
+         openmpi-bin openmpi-doc libopenmpi-dev
 
 # make /bin/sh symlink to bash instead of dash:
-#RUN echo "dash dash/sh boolean false" | debconf-set-selections
-#RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+RUN echo "dash dash/sh boolean false" | debconf-set-selections
+RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
+# Install bash with net redirections /usr/local/bin for supervisor to use
 RUN wget ftp://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz && tar -xzf bash-5.0.tar.gz && \
       cd bash-5.0 && ./configure --enable-net-redirections && \
       make && make install && cd .. && rm -rf bash-5.0 bash-5.0.tar.gz
+
+# Installing latest GCC compiler (version 10)
+RUN apt-get -qq update && \
+    apt-get -qq install -y gcc-10 g++-10 gfortran-10 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN update-alternatives \
+      --install /usr/bin/gcc      gcc      /usr/bin/gcc-9       80 \
+      --slave   /usr/bin/g++      g++      /usr/bin/g++-9          \
+      --slave   /usr/bin/gfortran gfortran /usr/bin/gfortran-9     \
+      --slave   /usr/bin/gcov     gcov     /usr/bin/gcov-9      && \
+    update-alternatives \
+      --install /usr/bin/gcc      gcc      /usr/bin/gcc-10      90 \
+      --slave   /usr/bin/g++      g++      /usr/bin/g++-10         \
+      --slave   /usr/bin/gfortran gfortran /usr/bin/gfortran-10    \
+      --slave   /usr/bin/gcov     gcov     /usr/bin/gcov-10     && \
+    chmod u+s /usr/bin/update-alternatives
 
 #RUN rm -f /var/lib/mysql/ibdata1
 
@@ -60,7 +80,7 @@ RUN set -ex \
     && chown -R mysql:mysql /var/run/mysqld \
     && mkdir -p /run/munge \
     && chown munge:munge /run/munge \
-    && /usr/sbin/create-munge-key
+    && /usr/sbin/create-munge-key -f
 
 # Copy Slurm configuration files into the container
 COPY files/slurm/slurm.conf /etc/slurm/slurm.conf
@@ -72,13 +92,21 @@ COPY files/supervisord.conf /etc/
 VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurmd", "/var/log/slurm"]
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
-RUN git clone --recursive https://github.com/EssentialsOfParallelComputing/Chapter15
+COPY files/mysql_secure.sh /usr/local/bin/mysql_secure.sh
+RUN chmod +x /usr/local/bin/mysql_secure.sh
 
 # Add Tini
 ARG TINI_VERSION=v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
 RUN chmod +x /sbin/tini
+
+SHELL ["/usr/local/bin/bash", "-c"]
+
+WORKDIR /home/chapter15
+
+RUN git clone --recursive https://github.com/EssentialsOfParallelComputing/Chapter15
+WORKDIR /home/chapter15/Chapter15
+#RUN make
 
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 CMD ["/usr/local/bin/bash"]
