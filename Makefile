@@ -1,10 +1,12 @@
-default: status AutomaticRestarts Prestart Fortran_Restarts
-.PHONY: status AutomaticRestarts Prestart Fortran_Restarts
+default: test AutomaticRestarts Prestart Fortran_Restarts
+.PHONY: status test AutomaticRestarts Prestart Fortran_Restarts
 
 status:
 	supervisorctl status
 	sinfo
 	scontrol show partition
+
+test:
 	# create a sample batch script
 	echo '#!/bin/sh' > submit.sh
 	echo 'sleep 15' >> submit.sh

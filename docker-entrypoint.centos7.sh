@@ -52,4 +52,10 @@ chown slurm:slurm /var/spool/slurmd /var/run/slurmd /var/lib/slurmd /var/log/slu
 echo "- Starting all Slurm processes under supervisord"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
 
+sleep 10
+
+supervisorctl status
+sinfo
+scontrol show partition
+
 exec "$@"

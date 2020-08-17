@@ -101,11 +101,14 @@ RUN chmod +x /sbin/tini
 
 SHELL ["/bin/bash", "-c"]
 
+RUN groupadd chapter15 && useradd -m -s /bin/bash -g chapter15 chapter15
+
 WORKDIR /home/chapter15
 ENV PATH=${PATH}:/usr/lib64/openmpi/bin
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/lib64/openmpi/lib
 
 RUN git clone --recursive https://github.com/EssentialsOfParallelComputing/Chapter15
+RUN chown -R chapter15:chapter15 /home/chapter15
 WORKDIR /home/chapter15/Chapter15
 #RUN make
 
