@@ -42,7 +42,7 @@ if [ ! -e DONE ]; then
 
    srun -n ${NUM_CPUS} ./${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
    STATUS=$?
-   echo "Finished srun" >> ${OUTPUT_FILE}
+   echo "Finished srun"                                  >> ${OUTPUT_FILE}
 
    if [ ${COUNT} -ge ${MAX_RESTARTS} ]; then
       echo "=== Reached maximum number of restarts ==="  >> ${OUTPUT_FILE}
