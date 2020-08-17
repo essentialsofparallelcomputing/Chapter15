@@ -40,7 +40,7 @@ if [ ! -e DONE ]; then
       cycle=""
    fi
 
-   mpirun -n ${NUM_CPUS} ./${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
+   mpirun -n ${NUM_CPUS} ${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
    STATUS=$?
    echo "Finished mpirun"                                >> ${OUTPUT_FILE}
 
