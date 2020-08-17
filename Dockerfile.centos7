@@ -33,6 +33,7 @@ RUN set -ex \
         munge \
         munge-devel \
         ncurses-devel \
+        openmpi \
         openmpi-devel \
         openssl-devel \
         openssl-libs \
@@ -52,8 +53,6 @@ RUN set -ex \
         zlib-devel \
     && yum clean all \
     && rm -rf /var/cache/yum 
-
-RUN module load mpi
 
 # Compile, build and install Slurm from Git source
 ARG SLURM_TAG=slurm-19-05-4-1
@@ -103,6 +102,8 @@ RUN chmod +x /sbin/tini
 SHELL ["/bin/bash", "-c"]
 
 WORKDIR /home/chapter15
+ENV PATH=${PATH}:/usr/lib64/openmpi/bin
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/lib64/openmpi/lib
 
 RUN git clone --recursive https://github.com/EssentialsOfParallelComputing/Chapter15
 WORKDIR /home/chapter15/Chapter15

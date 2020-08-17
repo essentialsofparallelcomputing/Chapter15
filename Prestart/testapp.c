@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 {
    MPI_Init(&argc, &argv);
    char checkpoint_name[50];
-   int mype, itstart = 1;
+   int mype, it, itstart = 1;
    MPI_Comm_rank(MPI_COMM_WORLD, &mype);
 
    if (argc >=2) itstart = atoi(argv[1]);
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
    if (mype ==0) signal(23, batch_timeout);
 
-   for (int it=itstart; it < 10000; it++){
+   for (it=itstart; it < 10000; it++){
       sleep(1);
 
       if ( it%60 == 0 ) {

@@ -1,6 +1,7 @@
 # Chapter15
 Chapter 15 of Parallel and High Performance Computing book
 
+# Slurm on Centos 7 Docker Image -- current working version
 # Slurm on Ubuntu 20.04 Docker Image
 
 This is an all-in-one [Slurm](https://slurm.schedmd.com/) installation.  This
