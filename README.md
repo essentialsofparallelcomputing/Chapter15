@@ -18,7 +18,7 @@ container runs the following processes:
 
 ```shell
 docker build -t slurm essentialsofparallelcomputing/chapter15
-docker run --init -it -h chapter15 essentialsofparallelcomputing/chapter15
+docker run -it -h hopper essentialsofparallelcomputing/chapter15
 ```
 
 The above command will drop you into a bash shell inside the container. Tini
@@ -26,7 +26,7 @@ is responsible for `init` and supervisord is the process control system . To
 view the status of all the processes, run:
 
 ```shell
-[root@chapter15 /]# supervisorctl status
+[root@hopper /]# supervisorctl status
 munged                           RUNNING   pid 23, uptime 0:02:35
 mysqld                           RUNNING   pid 24, uptime 0:02:35
 slurmctld                        RUNNING   pid 25, uptime 0:02:35
@@ -34,22 +34,22 @@ slurmd                           RUNNING   pid 22, uptime 0:02:35
 slurmdbd                         RUNNING   pid 26, uptime 0:02:35
 ```
 
-In `slurm.conf`, the **ControlMachine** hostname is set to **chapter15**. Since
+In `slurm.conf`, the **ControlMachine** hostname is set to **hopper**. Since
 this is an all-in-one installation, the hostname must match **ControlMachine**.
-Therefore, you must pass the `-h chapter15` to docker at run time so that the
+Therefore, you must pass the `-h hopper` to docker at run time so that the
 hostnames match.
 
 You can run the usual slurm commands:
 
 ```shell
-[root@chapter15 /]# sinfo
+[root@hopper /]# sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 normal*      up 5-00:00:00      5   idle c[1-5]
 debug        up 5-00:00:00      5   idle c[6-10]
 ```
 
 ```shell
-[root@chapter15 /]# scontrol show partition
+[root@hopper /]# scontrol show partition
 PartitionName=normal
    AllowGroups=ALL AllowAccounts=ALL AllowQos=ALL
    AllocNodes=ALL Default=YES QoS=N/A

@@ -1,2 +1,2 @@
 #!/bin/sh
-docker run -it -h chapter15 essentialsofparallelcomputing/chapter15
+docker run -it -h hopper essentialsofparallelcomputing/chapter15

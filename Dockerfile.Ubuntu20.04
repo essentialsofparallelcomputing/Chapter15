@@ -1,8 +1,8 @@
 FROM ubuntu:20.04 AS builder
 
 LABEL essentialsofparallelcomputing/chapter15 \
-      Robey and Zamora, Parallel and High Performance Computing, \
-      Manning Publications
+      Parallel and High Performance Computing, Manning Publications\
+      Robey and Zamora, brobey@earthlink.net
 
 ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 
@@ -91,12 +91,12 @@ RUN mkdir -p /run/munge && chown munge:munge /run/munge \
 COPY files/slurm/slurm.conf /etc/slurm/slurm.conf
 #COPY files/slurm/gres.conf /etc/slurm/gres.conf
 COPY files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
-COPY files/supervisord.conf /etc/
+COPY files/supervisord.ubuntu20.04.conf /etc/supervisord.conf
 
 # Mark externally mounted volumes
 VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurmd", "/var/log/slurm"]
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker-entrypoint.ubuntu20.04.sh /usr/local/bin/docker-entrypoint.sh
 COPY files/mysql_secure.sh /usr/local/bin/mysql_secure.sh
 RUN chmod +x /usr/local/bin/mysql_secure.sh
 

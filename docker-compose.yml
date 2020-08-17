@@ -3,7 +3,7 @@ version: '3'
 services:
   slurm:
     build: .
-    hostname: chapter15
+    hostname: hopper
     stdin_open: true
     tty: true
     volumes:

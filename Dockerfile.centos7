@@ -1,0 +1,112 @@
+FROM centos:7.7.1908
+
+LABEL essentialsofparallelcomputing/chapter15 \
+      Parallel and High Performance Computing, Manning Publications\
+      Robey and Zamora, brobey@earthlink.net
+
+ENV PATH "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
+
+# Install common YUM dependency packages
+RUN set -ex \
+    && yum makecache fast \
+    && yum -y update \
+    && yum -y install epel-release \
+    && yum -y install \
+        autoconf \
+        bash-completion \
+        bzip2 \
+        bzip2-devel \
+        file \
+        iproute \
+        gcc \
+        gcc-c++ \
+        gdbm-devel \
+        git \
+        glibc-devel \
+        gmp-devel \
+        libffi-devel \
+        libGL-devel \
+        libX11-devel \
+        make \
+        mariadb-server \
+        mariadb-devel \
+        munge \
+        munge-devel \
+        ncurses-devel \
+        openmpi-devel \
+        openssl-devel \
+        openssl-libs \
+        perl \
+        pkconfig \
+        psmisc \
+        readline-devel \
+        sqlite-devel \
+        tcl-devel \
+        tix-devel \
+        tk \
+        tk-devel \
+        supervisor \
+        wget \
+        vim-enhanced \
+        xz-devel \
+        zlib-devel \
+    && yum clean all \
+    && rm -rf /var/cache/yum 
+
+RUN module load mpi
+
+# Compile, build and install Slurm from Git source
+ARG SLURM_TAG=slurm-19-05-4-1
+RUN set -ex \
+    && git clone https://github.com/SchedMD/slurm.git \
+    && pushd slurm \
+    && git checkout tags/$SLURM_TAG \
+    && ./configure --enable-debug --enable-front-end --prefix=/usr \
+       --sysconfdir=/etc/slurm --with-mysql_config=/usr/bin \
+       --libdir=/usr/lib64 \
+    && make install \
+    && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
+    && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
+    && install -D -m644 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
+    && install -D -m644 contribs/slurm_completion_help/slurm_completion.sh /etc/profile.d/slurm_completion.sh \
+    && popd \
+    && rm -rf slurm \
+    && groupadd -r slurm  \
+    && useradd -r -g slurm slurm \
+    && mkdir /etc/sysconfig/slurm \
+        /var/spool/slurmd \
+        /var/run/slurmd \
+        /var/lib/slurmd \
+        /var/log/slurm \
+    && chown slurm:root /var/spool/slurmd \
+        /var/run/slurmd \
+        /var/lib/slurmd \
+        /var/log/slurm \
+    && /sbin/create-munge-key
+
+# Copy Slurm configuration files into the container
+COPY files/slurm/slurm.conf /etc/slurm/slurm.conf
+#COPY files/slurm/gres.conf /etc/slurm/gres.conf
+COPY files/slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
+COPY files/supervisord.centos7.conf /etc/supervisord.conf
+
+# Mark externally mounted volumes
+VOLUME ["/var/lib/mysql", "/var/lib/slurmd", "/var/spool/slurmd", "/var/log/slurm"]
+
+COPY docker-entrypoint.centos7.sh /usr/local/bin/docker-entrypoint.sh
+
+# Add Tini
+ARG TINI_VERSION=v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
+RUN chmod +x /sbin/tini
+
+SHELL ["/bin/bash", "-c"]
+
+WORKDIR /home/chapter15
+
+RUN git clone --recursive https://github.com/EssentialsOfParallelComputing/Chapter15
+WORKDIR /home/chapter15/Chapter15
+#RUN make
+
+ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
+CMD ["/bin/bash"]
