@@ -2,7 +2,7 @@
 
 #if [ ! -f "/var/lib/mysql/ibdata1" ]; then
     echo "- Initializing database"
-    /usr/bin/mysql_install_db --force
+    /usr/bin/mysql_install_db --force &> /dev/null
 
 #   echo "- Updating MySQL directory permissions"
 #   chown -R mysql:mysql /var/lib/mysql

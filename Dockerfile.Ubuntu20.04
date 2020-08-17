@@ -47,6 +47,7 @@ RUN update-alternatives \
 #RUN rm -f /var/lib/mysql/ibdata1
 
 # Compile, build and install Slurm from Git source
+
 ARG SLURM_TAG=slurm-19-05-4-1
 RUN update-alternatives --set gcc /usr/bin/gcc-9
 RUN set -ex \
@@ -63,8 +64,7 @@ RUN set -ex \
     && install -D -m644 contribs/slurm_completion_help/slurm_completion.sh /etc/profile.d/slurm_completion.sh \
     && cd .. \
     && rm -rf slurm \
-    && groupadd -r slurm  \
-    && useradd -r -g slurm slurm \
+    && groupadd -r slurm && useradd -r -g slurm slurm \
     && mkdir -p /etc/sysconfig/slurm \
         /var/spool/slurmd \
         /var/run/slurmd \
@@ -76,15 +76,16 @@ RUN set -ex \
         /var/lib/slurmd \
         /var/log/slurm
 
+RUN update-alternatives --set gcc /usr/bin/gcc-10
+
 RUN mkdir -p /var/run/supervisor
 
 RUN mkdir -p /var/run/mariadb && mkdir -p /var/run/mysqld \
-    && chown -R mysql:mysql /var/lib/mysql /var/run/mariadb /var/run/mysqld
+    && chown -R mysql:mysql /var/lib/mysql /var/run/mariadb /var/run/mysqld \
+    && chmod -R 777 /var/lib/mysql /var/run/mariadb /var/run/mysqld
 
 RUN mkdir -p /run/munge && chown munge:munge /run/munge \
     && /usr/sbin/create-munge-key -f
-
-RUN update-alternatives --set gcc /usr/bin/gcc-10
 
 # Copy Slurm configuration files into the container
 COPY files/slurm/slurm.conf /etc/slurm/slurm.conf

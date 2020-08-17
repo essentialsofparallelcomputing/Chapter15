@@ -63,18 +63,6 @@ PartitionName=normal
 
 ## Building
 
-### Using Existing Tags
-
-There are multiple versions of Slurm available, each with its own tag.  To build
-a specific version of Slurm, checkout the tag that matches that version and
-build the Dockerfile:
-
-```shell
-git clone https://github.com/giovtorres/docker-centos7-slurm
-git checkout <tag>
-docker build -t docker-centos7-slurm .
-```
-
 ### Using Build Args
 
 You can use docker's `--build-arg` option to customize the version of Slurm
@@ -84,7 +72,7 @@ To specify the version of Slurm, assign a valid Slurm tag to the `SLURM_TAG`
 build argument:
 
 ```shell
-docker build --build-arg SLURM_TAG="slurm-19-05-1-2" -t docker-centos7-slurm:19.05.1-2
+docker build --build-arg SLURM_TAG="slurm-19-05-4-1" -t essentialsofparallelcomputing/chapter15
 ```
 
 
