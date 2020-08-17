@@ -33,7 +33,7 @@ echo "Restart COUNT is ${COUNT}"
 if [ ! -e DONE ]; then
    if [ -e RESTART ]; then
       echo "=== Restarting ${EXEC_NAME} ==="             >> ${OUTPUT_FILE}
-      cycle=`cat RESTART`
+      cycle=`cut -f 1 -d " " RESTART`
       rm -f RESTART
    else
       echo "=== Starting problem ==="                    >> ${OUTPUT_FILE}

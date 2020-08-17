@@ -32,11 +32,12 @@ echo "Restart COUNT is ${COUNT}"
 
 if [ ! -e DONE ]; then
    if [ -e RESTART ]; then
-      echo "=== Restarting ${EXEC_NAME} ==="               >> ${OUTPUT_FILE}
+      echo "=== Restarting ${EXEC_NAME} ==="             >> ${OUTPUT_FILE}
       cycle=`cut -f 1 -d " " RESTART`
       rm -f RESTART
    else
-      echo "=== Starting problem ==="                      >>  ${OUTPUT_FILE}
+      echo "=== Starting problem ==="                    >> ${OUTPUT_FILE}
+      cycle=""
    fi
 
    srun -n ${NUM_CPUS} ./${EXEC_NAME} ${PROB_INPUT} ${cycle} &>> ${OUTPUT_FILE}
