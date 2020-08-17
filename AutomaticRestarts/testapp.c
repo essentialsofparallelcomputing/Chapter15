@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
    if (argc >=2) itstart = atoi(argv[1]);
    // if (istart > 0) read_restart;
 
-   if (mype ==0) signal(23, batch_timeout);
+   if (mype ==0) signal(SIGUSR1, batch_timeout);
 
    for (it=itstart; it < 10000000; it++){
       sleep(10);

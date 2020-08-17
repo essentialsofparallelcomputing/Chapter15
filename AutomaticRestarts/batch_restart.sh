@@ -12,7 +12,7 @@
 #
 #SBATCH -N 1
 #SBATCH -n 4
-#SBATCH --signal=23@160
+#SBATCH --signal=USR1@160
 #SBATCH -t 00:08:00
 
 # Do not place bash commands before the last SBATCH directive
