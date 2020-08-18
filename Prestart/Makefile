@@ -4,7 +4,7 @@ testapp.o: testapp.c
 	mpicc -g -c testapp.c
 
 testapp: testapp.o
-	mpif90 -g testapp.o -o testapp
+	mpicc -g testapp.o -o testapp
 
 run: testapp
 	sbatch < batch_restart.sh

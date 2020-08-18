@@ -20,6 +20,7 @@ RUN set -ex \
         iproute \
         gcc \
         gcc-c++ \
+        gcc-gfortran \
         gdbm-devel \
         git \
         glibc-devel \
@@ -63,7 +64,7 @@ RUN set -ex \
     && ./configure --enable-debug --enable-front-end --prefix=/usr \
        --sysconfdir=/etc/slurm --with-mysql_config=/usr/bin \
        --libdir=/usr/lib64 \
-    && make install \
+    && make -j 4 install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
     && install -D -m644 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
