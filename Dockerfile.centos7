@@ -52,7 +52,7 @@ RUN set -ex \
         xz-devel \
         zlib-devel \
     && yum clean all \
-    && rm -rf /var/cache/yum 
+    && rm -rf /var/cache/yum
 
 # Compile, build and install Slurm from Git source
 ARG SLURM_TAG=slurm-19-05-4-1
@@ -60,7 +60,7 @@ RUN set -ex \
     && git clone https://github.com/SchedMD/slurm.git \
     && pushd slurm \
     && git checkout tags/$SLURM_TAG \
-    && ./configure --enable-debug --prefix=/usr \
+    && ./configure --enable-debug --enable-front-end --prefix=/usr \
        --sysconfdir=/etc/slurm --with-mysql_config=/usr/bin \
        --libdir=/usr/lib64 \
     && make install \

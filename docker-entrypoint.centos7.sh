@@ -52,6 +52,7 @@ chown slurm:slurm /var/spool/slurmd /var/run/slurmd /var/lib/slurmd /var/log/slu
 echo "- Starting all Slurm processes under supervisord"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
 
+echo "Waiting for daemons to startup"
 sleep 10
 
 supervisorctl status
