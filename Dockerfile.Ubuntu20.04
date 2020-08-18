@@ -57,7 +57,7 @@ RUN set -ex \
     && ./configure --enable-debug --prefix=/usr \
        --sysconfdir=/etc/slurm --with-mysql_config=/usr/bin \
        --libdir=/usr/lib64 \
-    && make install \
+    && make -j 4 install \
     && install -D -m644 etc/cgroup.conf.example /etc/slurm/cgroup.conf.example \
     && install -D -m644 etc/slurm.conf.example /etc/slurm/slurm.conf.example \
     && install -D -m644 etc/slurmdbd.conf.example /etc/slurm/slurmdbd.conf.example \
@@ -107,9 +107,12 @@ RUN chmod +x /sbin/tini
 
 SHELL ["/usr/local/bin/bash", "-c"]
 
+RUN groupadd chapter15 && useradd -m -s /bin/bash -g chapter15 chapter15
+
 WORKDIR /home/chapter15
 
 RUN git clone --recursive https://github.com/EssentialsOfParallelComputing/Chapter15
+RUN chown -R chapter15:chapter15 /home/chapter15
 WORKDIR /home/chapter15/Chapter15
 #RUN make
 

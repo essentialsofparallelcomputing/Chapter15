@@ -71,14 +71,14 @@ RUN set -ex \
     && install -D -m644 contribs/slurm_completion_help/slurm_completion.sh /etc/profile.d/slurm_completion.sh \
     && popd \
     && rm -rf slurm \
-    && groupadd -r slurm  \
-    && useradd -r -g slurm slurm \
-    && mkdir /etc/sysconfig/slurm \
+    && groupadd -r slurm && useradd -r -g slurm slurm \
+    && mkdir -p /etc/sysconfig/slurm \
         /var/spool/slurmd \
         /var/run/slurmd \
         /var/lib/slurmd \
         /var/log/slurm \
-    && chown slurm:root /var/spool/slurmd \
+    && chown slurm:root \
+        /var/spool/slurmd \
         /var/run/slurmd \
         /var/lib/slurmd \
         /var/log/slurm \
