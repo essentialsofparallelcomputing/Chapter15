@@ -1,4 +1,3 @@
-#define SIGUSR1 10
       module signal_batch
           integer :: batch_terminate_signal = 0
       end module signal_batch
@@ -33,7 +32,7 @@
          read(cmd,*,iostat=stat)  itstart
       endif
 
-      if (mpi_rank .eq. 0) call signal(SIGUSR1, batch_timeout) ! SIGSTOP
+      if (mpi_rank .eq. 0) call signal(23, batch_timeout) ! SIGSTOP
 
       do it=itstart,10000 ! main iteration loop
 

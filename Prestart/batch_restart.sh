@@ -12,8 +12,8 @@
 #
 #SBATCH -N 1
 #SBATCH -n 4
-#SBATCH --signal=USR1@160
-#SBATCH -t 00:05:00
+#SBATCH --signal=23@160
+#SBATCH -t 00:08:00
 
 # Do not place bash commands before the last SBATCH directive
 # Behavior can be unreliable
@@ -43,7 +43,7 @@ if [ ! -e DONE ]; then
    echo "=== Submitting restart script ==="              >> ${OUTPUT_FILE}
    sbatch --dependency=afterok:${SLURM_JOB_ID} <batch_restart.sh
 
-   mpirun -n ${NUM_CPUS} ./${EXEC_NAME} ${cycle}        &>> ${OUTPUT_FILE}
+   mpirun -n ${NUM_CPUS} ${EXEC_NAME} ${cycle}          &>> ${OUTPUT_FILE}
    STATUS=$?
    echo "Finished mpirun"                                >> ${OUTPUT_FILE}
 
