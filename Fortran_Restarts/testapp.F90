@@ -1,3 +1,4 @@
+#define SIGUSR1 10
       module signal_batch
           integer :: batch_terminate_signal = 0
       end module signal_batch
