@@ -43,7 +43,7 @@ if [ ! -e DONE ]; then
    echo "=== Submitting restart script ==="              >> ${OUTPUT_FILE}
    sbatch --dependency=afterok:${SLURM_JOB_ID} <batch_restart.sh
 
-   srun --cpu-bind=none -n ${NUM_CPUS} ./${EXEC_NAME} ${cycle}        &>> ${OUTPUT_FILE}
+   mpirun -n ${NUM_CPUS} ./${EXEC_NAME} ${cycle}        &>> ${OUTPUT_FILE}
    STATUS=$?
    echo "Finished mpirun"                                >> ${OUTPUT_FILE}
 

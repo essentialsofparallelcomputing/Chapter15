@@ -12,7 +12,7 @@
 if [ ! -d "/var/lib/mysql/slurm_acct_db" ]; then
     /usr/bin/mysqld_safe --datadir="/var/lib/mysql" &
 
-    for count in {10..0}; do
+    for count in {30..0}; do
         if echo "SELECT 1" | mysql ; then
             break
         fi
@@ -51,5 +51,12 @@ chown slurm:slurm /var/spool/slurmd /var/run/slurmd /var/lib/slurmd /var/log/slu
 
 echo "- Starting all Slurm processes under supervisord"
 /usr/bin/supervisord --configuration /etc/supervisord.conf
+
+echo "Waiting for daemons to startup"
+sleep 10
+
+supervisorctl status
+sinfo
+scontrol show partition
 
 exec "$@"

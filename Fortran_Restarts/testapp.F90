@@ -32,7 +32,7 @@
          read(cmd,*,iostat=stat)  itstart
       endif
 
-      if (mpi_rank .eq. 0) call signal(23, batch_timeout) ! SIGSTOP
+      if (mpi_rank .eq. 0) call signal(SIGUSR1, batch_timeout) ! SIGSTOP
 
       do it=itstart,10000 ! main iteration loop
 
