@@ -1,10 +1,5 @@
 default: test AutomaticRestarts Prestart Fortran_Restarts
-.PHONY: status test AutomaticRestarts Prestart Fortran_Restarts
-
-status:
-	supervisorctl status
-	sinfo
-	scontrol show partition
+.PHONY: test AutomaticRestarts Prestart Fortran_Restarts
 
 test:
 	# create a sample batch script
@@ -15,7 +10,6 @@ test:
 	# submit the script
 	sbatch submit.sh
 	sinfo
-	squeue
 	# check output
 	sleep 20
 	cat slurm-*.out
@@ -30,6 +24,7 @@ Fortran_Restarts:
 	cd Fortran_Restarts && make && sbatch batch_restart.sh
 
 clean:
+	rm slurm-*.out submit.sh
 	cd AutomaticRestarts; make clean
 	cd Prestart; make clean
 	cd Fortran_Restarts; make clean
