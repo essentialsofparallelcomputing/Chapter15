@@ -18,7 +18,7 @@
 # Do not place bash commands before the last SBATCH directive
 # Behavior can be unreliable
 
-NUM_CPUS=4
+NUM_CPUS=${SLURM_NTASKS}
 OUTPUT_FILE=run.out
 EXEC_NAME=./testapp
 MAX_RESTARTS=4
