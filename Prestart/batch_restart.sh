@@ -44,7 +44,6 @@ if [ ! -e DONE ]; then
    sbatch --dependency=afterok:${SLURM_JOB_ID} <batch_restart.sh
 
    mpirun -n ${NUM_CPUS} ${EXEC_NAME} ${cycle}          &>> ${OUTPUT_FILE}
-   STATUS=$?
    echo "Finished mpirun"                                >> ${OUTPUT_FILE}
 
    if [ ${COUNT} -ge ${MAX_RESTARTS} ]; then

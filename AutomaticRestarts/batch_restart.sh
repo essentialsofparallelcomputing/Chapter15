@@ -25,11 +25,10 @@ MAX_RESTARTS=4
 
 if [ -z ${COUNT} ]; then
    export COUNT=0
-else
-   echo "Restart COUNT is ${COUNT}"
 fi
 
 ((COUNT++))
+echo "Restart COUNT is ${COUNT}"
 
 if [ ! -e DONE ]; then
    if [ -e RESTART ]; then
