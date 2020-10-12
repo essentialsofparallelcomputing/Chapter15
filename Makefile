@@ -1,5 +1,5 @@
-default: test AutomaticRestarts Prestart Fortran_Restarts
-.PHONY: test AutomaticRestarts Prestart Fortran_Restarts
+default: test slurm_first_batch AutomaticRestarts Prestart Fortran_Restarts
+.PHONY: test slurm_first_batch AutomaticRestarts Prestart Fortran_Restarts
 
 test:
 	# create a sample batch script
@@ -13,6 +13,10 @@ test:
 	# check output
 	sleep 20
 	cat slurm-*.out
+
+slurm_first_batch:
+	cd Slurm_first_batch && mkdir build && cd build && cmake .. && make && \
+           sbatch < first_slurm_batch_job
 
 AutomaticRestarts:
 	cd AutomaticRestarts && make && sbatch batch_restart.sh
